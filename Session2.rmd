@@ -1,0 +1,187 @@
+---
+title: "Session 2 - Essential Commands for Exploring the Structure of a datafile or R Object"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+### Objectives:
+
+1. Loading an R Data File
+2. Learn the commands to understand the various characteristics of a data set and the variables contained within
+
+### Getting Started: 
+
+First, we are going to load the GSS data file that has been provided.  To load the data file, you can either:  
+
+  + RStudio -> Session -> Load Workspace
+  + **load("insert name of R data file here")**
+  
+Before you can use the *load* function, you must set the working directory so that RStudio can find the file
+
+  + RStudio -> Session -> Set Working Directory -> Choose Directory
+
+This will automatically create the correct set working command, and execute it.  Now you can use the *load* function to load the data set.
+
+```{r}
+setwd("~/NU/RStudentLab") # set the working directory of the data file
+load("gss.Rda") # load the data
+```
+
+With the data set loaded, you can run a set of functions to learn about the date file.  These functions include:
+
+Command       |       Output
+-------       |       ------
+dim()         |       Data set (dim)ensions = 2538 rows x 47 rows
+names()       |       Names of all variables contained within the data set/object
+nrow()        |       Number of rows contained with the data set
+ncol()        |       Number of columns (variables) in the data set
+str()         |       structure of the data file/object
+class()       |       class of the object
+
+A good deal of the time, an error in R is caused by a function expecting one type of object (e.g. a table), and the user submitting something else (e.g. a vector).  These commands can often times help trouble shoot error messages.
+
+We can run these functions on our current data set.  Our current data set is referenced as "MyData" within the *gss.Rda* object.
+
+```{r}
+dim(MyData)                # data set (dim)ensions = 2538 rows X 47 columns
+names(MyData)              # names of variables
+nrow(MyData)               # number of rows (cases) = 2358
+ncol(MyData)               # number of columns (variables) = 47
+str(MyData)                # structure of the data file
+class(MyData)
+class(MyData$marital)      # Check the class of a variable in the data set
+```
+
+From this data set, we can see that there are **`r nrow(MyData)`**  cases contained within the data set.  There are **`r ncol(MyData)`** variables in the data set.
+
+Weight **(`r class(MyData$weight)`)** and Height **(`r class(MyData$height)`)** are being read in as factor variables.  These need to be changed to numeric variables so that they can be treated as continuous measures.
+
+To do this, we will create two new variables, and store the results of our transformed factor variable in the new variables.  The two new variables are *weightInt* and *heightInt*.
+
+```{r}
+MyData$weightInt <- as.numeric(levels(MyData$weight))[MyData$weight]
+str(MyData$weight)
+str(MyData$weightInt)
+
+MyData$heightInt <- as.numeric(levels(MyData$height))[MyData$height]
+str(MyData$height)
+str(MyData$heightInt)
+```
+\newpage
+
+
+We can check to make sure everything worked.  First, we can create a new data object that contains just the four variables of interest (e.g. height, heightInt, weight, weightInt).  This way, we can focus our attention on just these variables.
+
+Using the **"head"** and **"tail"** commands on this new data object allows us to see the first and last cases found in a data set.
+
+```{r}
+DataCheck <- MyData[,c("weight", "weightInt", "height", "heightInt")] # create a new data frame 
+                                                                      # just to check our conversion from Factor to Numeric
+head(DataCheck)
+tail(DataCheck)
+```
+\newpage
+
+*weightInt* **(`r class(MyData$weightInt)`)** and *heightInt* **(`r class(MyData$heightInt)`)** are now considered numeric variables.  We can compute summary statistics for these new variables that are appropriate for continous measures.  Many commands in R will work with factor (e.g. nominal) or numeric (e.g. interval/ratio), and the results will differ depending on the class of the object.
+
+For example, compare the summary output for a numeric variable (e.g. *"heightInt"*).  
+
+```{r}
+summary(MyData$heightInt)
+```
+
+to the summary output for a factor variable (e.g. "happy").
+
+```{r}
+summary(MyData$happy)
+```
+
+
+The same command, *summary*, yields different results depending on what type of variable you put into the function.  For continuous measures, we get basic measures of variability and central tendency.  For factor level variables (e.g. nominal or ordinal), we get frequency counts.
+
+\newpage
+
+Also, if we know the structure of an object, we can also extract certain values from the results we get.  First we need to create an object to store our summary values. Then run the **"str"** command to see how the object is set-up.
+
+```{r}
+HeightValues <- summary(MyData$heightInt) # store the results of "summary" in a new object
+str(HeightValues) # look at the structure of our new object
+names(HeightValues)
+```
+
+We can see that this is a **'table'** with **'named'** columns.  There are **`r length(HeightValues)`** values [1:7] contained within our summary table for *heightInt*.  We can exract any value we want of the **7** either using the "index" number or the value name.
+
+```{r}
+HeightValues[[1]] ### retrieve the 'minimum' value using the index number: note the use of "[[]]""
+HeightValues["3rd Qu."] ### retrieve the 'third quartile' using the value name
+```
+
+\newpage
+
+Basic plotting also depends on the type of variable you are working with
+
+```{r}
+MyData$happy <- droplevels(MyData$happy)  # drop the levels of the variable that have "0" responses to clean up the chart
+hist(MyData$heightInt)
+```
+
+\newpage
+```{r}
+plot(MyData$happy)
+```
+
+\newpage
+
+Now that we have height and weight as continous variables, we can also get a simple scatter plot of height and weight.
+
+```{r}
+plot(MyData$heightInt, MyData$weightInt)
+```
+
+
+\newpage
+
+Again, keep in mind that what you can do in R often depends on what type of variable/object you are working with.  You need to ensure that you provide a function with the type of object it expects.  Using the commands we discussed above allows to understand your variables/data/objects and provide the correct types of objects to R functions.
+
+Functions used in this session:
+
+setwd()  
+load()  
+dim()  
+names()  
+nrow()  
+ncol()  
+str()  
+class()  
+head()  
+tail()  
+summary()  
+
+&nbsp;  
+ 
+
+****  
+
+### Practice:  
+
+&nbsp;  
+
+1.  What class of object is "hivkiss" _________________________?
+
+2.  What class of object is "id_" _____________________________?
+
+3.  Look at the summary data for weight.
+
+>What is the Median weight _____________________?
+
+>What is the Average weight ____________________?
+
+4.  Look at the summary data for Happy Marriage.
+
+>How many people are reporting "Not too happy" _________________________?
+
+5.  Create a simple plot for the Happy Marriage variable.
+
+

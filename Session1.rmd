@@ -1,0 +1,135 @@
+---
+title: "Session 1 - Installing, loading, understanding and using R packages"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+
+### Objectives:
+
+1. Learn to install R packages
+2. Learn to update R packages
+3. How to get help on R Packages
+4. Using data and functions contained within an R Package
+
+### Getting Started:  
+
+Installing packages in R can be done in one of three ways:
+
+  + Using RStudio -> Install Packages
+  + Using the command **install.packages()** 
+  + Using the following command ...
+  
+  
+>**install.packages("insert package name", dependencies=TRUE, repos="http://cran.us.r-project.org")**     
+&nbsp;  
+  
+For example, if you knew the name of the package you want to install, could enter...    
+&nbsp;    
+    
+>**install.packages("epitools", dependencies=TRUE, repos="http://cran.us.r-project.org")**  
+&nbsp;    
+
+and this would install the R package *"epitools"*.
+
+&nbsp;
+\newpage
+
+```{r}
+install.packages("epitools", 
+                 dependencies=TRUE,
+                 repos="http://cran.us.r-project.org")
+```
+
+If you want to update packages already installed, you can use the following:
+
+   + **update.packages()**
+     
+and this will update all your currently installed packages.  Note that, depending on how many packages you have, the speed of your computer, and the speed of your internet connection, this can take quite some time.  Once a package is installed, it can be used by loading the package.  For example, to actually use the *"epitools"* package in a session, you would enter:
+
+   + **library("epitools")**
+
+and this will make all the functions and data sets contained within the *"epitools"* package available for use.
+
+```{r}
+library("epitools")
+```
+
+Now the *"epitools"* package is loaded and all its functions are available.  You can get help on a package  using:  
+
++ **help(package="insert package name here")**
+
+\newpage
+
+For example:
+
++ **help(package="epitools")**  <- Help on the entire "epitools" package/function  
++ **help(wnv)**  <- Help on a data set ("wnv") contained within the "epitools" package  
+
+&nbsp;
+
+Now the *epitools* package is loaded and we can start to use it.  There is a data set found in the package with records of West Nile Virus.  We can load the data using the command:
+
++ **data(wnv)**
+&nbsp;
+
+And view the first 6 records using the command:
+
++ **head(wnv)**
+&nbsp;
+
+```{r}
+data(wnv)
+head(wnv)
+```
+
+
+```{r}
+options(scipen=999) # turn off scientific notation
+data(wnv) # load the West Nile Virus Data Set
+Sex.By.Death <- epitable (wnv$sex, wnv$death) # Create a 2x2 table and store it in "Sex.By.Death"
+Sex.By.Death # look at the 2x2 table
+oddsratio(Sex.By.Death, method="fisher") # calculate an Odds Ratio
+```
+\newpage
+```{r}
+plot(Sex.By.Death)
+```
+\newpage
+
+Basic functions used in this session:
+
+install.packages()  
+update.packages()  
+library()  
+help()  
+data()  
+head()  
+plot()  
+
+&nbsp;  
+ 
+
+****  
+
+### Practice:  
+
+&nbsp;
+
+1.  Install the r package "DescTools"
+
+2.  Load the package "DescTools" and run help to see the contents of the package
+
+3.  This package contains a data set call "d.pizza".  Load this data set and run help for the data set to see the contents.
+
++ How many variables are contained within the data set? ______________________________
+
+4.  Look at the first few cases of the data set using the "head" command
+
+5.  Using the "Freq" function found in "DescTools", run a frequency count for "operator"
+
++ How many pizza's were delivered by Maria _______________?
+
+6.  Create a basic plot for "operator"
