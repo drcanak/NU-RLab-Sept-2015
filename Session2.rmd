@@ -1,6 +1,6 @@
 ---
 title: "Session 2 - Essential Commands for Exploring the Structure of a datafile or R Object"
-author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
 date: "Saturday, September 26th, 2015"
 output: pdf_document
 classoption: landscape

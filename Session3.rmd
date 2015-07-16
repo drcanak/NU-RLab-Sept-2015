@@ -1,6 +1,6 @@
 ---
 title: "Session 3 - R Data Structures"
-author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
 date: "Saturday, September 26th, 2015"
 output: pdf_document
 classoption: landscape
@@ -24,7 +24,7 @@ R has a number of different data structures, and you should be familiar with the
 
 Scalars are single values, stored in an object.  Whenever we want to store something in something else, we use the:
 
->**<-**  
+> <- 
 
 operator.  So, to create a scalar, we tell R the name of the scalar, and then use the **<-** as the assignment operator.  It acts like an "=" sign.
 

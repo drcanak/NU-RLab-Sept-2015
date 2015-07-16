@@ -1,0 +1,173 @@
+---
+title: "Subetting a data file"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+### Objectives:
+
+1. Learn how to create a data frame that includes a subset of variables from a larger data frame
+2. Learn how to select cases based on the value of a variable (or variables) 
+
+### Getting Started
+
+
+```{r}
+setwd("~/NU/RStudentLab") # set the working directory of the data file
+load("gss.Rda") # load the data
+```
+
+In order to select out a subset of variables, you
+
+1.  Specify the variables you are interested in keeping
+2.  Create a vector of the variable names (or you could use column numbers)
+3.  Create a new dataframe that is made using the "[ ]" notation we learned earlier
+
+Keep in mind that when we subset a dataframe, we create a **new** dataframe (or object).  Our original data is still there.  We are simply creating a new object that is a subset of our original object.
+
+\newpage
+
+We can use variable names to subset a data set, keeping only those variables that we are interested in.  
+
+```{r}
+myvars <- c("marital", "health", "life") #using variable names
+My.Subset <- MyData[myvars]
+head(My.Subset)
+```
+
+We can also use column numbers.
+
+```{r}
+myvars2 <- c(3, 11, 12) #using column numbers
+My.Subset2 <- MyData[myvars]
+head(My.Subset2)
+```
+
+In order to select specific cases (rows), we use the same "[ ]" operator we learned earlier.  Note the *','* contained within the *[ ]* notation.  Placing a ',' after the selection criteria means "select the rows that meet the criteria, but take all the columns".
+
+For example, if we are interested in taking the first 5 observations from a data table...
+
+```{r}
+# first 5 observations
+My.New.Cases <- MyData[1:5,]
+dim(My.New.Cases)
+```
+
+\newpage
+
+We can also subset our data based on the value of a particular value, or values, of a particular variable.
+
+```{r}
+# based on variable values - take all persons who are divorced
+Divorced.Cases<- MyData[which(MyData$marital=='Divorced'),]
+dim(Divorced.Cases)
+```
+
+Finally, we can also subset our data based on the values of different variables, by stringing our command together with *and* operator, **"&"** or the *or* operator, **"|"**.
+
+In the following examples, note the use of the "&" and "|" logical operators.
+
+```{r}
+# based on more than one variable value - take all persons who are divorced and in poor health
+Divorced.Cases.Poor.Health <- MyData[which(MyData$marital == 'Divorced' & MyData$health == 'Poor'),]
+dim(Divorced.Cases.Poor.Health)
+```
+
+```{r}
+# based on more than one variable value - take all persons who are divorced -or- in poor health
+Divorced.Cases.Or.Poor.Health <- MyData[ which(MyData$marital == 'Divorced' | MyData$health == 'Poor') , ]
+dim(Divorced.Cases.Or.Poor.Health)
+```
+
+Now we can combine the subsetting variables and subsetting cases.  Lets take all the *Divorced* persons who are in *Poor* health, and look at their happiness.
+
+```{r, fig.width=6, fig.height=4}
+myvars <- c("marital", "health", "happy") #using variable names
+My.Subset <- MyData[myvars]
+Divorced.Cases.Poor.Health <- My.Subset[which(My.Subset$marital == 'Divorced' & My.Subset$health == 'Poor'),]
+head(Divorced.Cases.Poor.Health)
+Divorced.Cases.Poor.Health$happy <- droplevels(Divorced.Cases.Poor.Health$happy) # drop unused levels
+plot(Divorced.Cases.Poor.Health$happy)
+
+```
+
+Not surprisingly, of the subset of persons who report both being "divorced" and in "Poor" health, a good majority are reporting "Not too happy".
+
+Lets compare that to those persons who are *Married* and in *Poor* health to see who they compare.
+
+\newpage
+
+```{r, fig.width=6, fig.height=3}
+myvars <- c("marital", "health", "happy") #using variable names
+My.Subset <- MyData[myvars]
+Married.Cases.Poor.Health <- My.Subset[which(My.Subset$marital == 'Married' & My.Subset$health == 'Poor'),]
+head(Married.Cases.Poor.Health)
+Married.Cases.Poor.Health$happy <- droplevels(Married.Cases.Poor.Health$happy) # drop unused levels
+plot(Married.Cases.Poor.Health$happy)
+```
+
+So being married might mitigate some of the effects of poor health, at least in so far as the person's happiness is concerned.
+
+&nbsp;  
+
+### Functions used in this session: 
+
+c()  
+dim()  
+which()  
+head()  
+droplevels()  
+
+
+
+****  
+
+### Practice:
+
+1.  Create a subset of the GSS data that contains the following variables: Marital Status, Life, Poor Mental Health Days, and Depression.  Name it "My.Subset"
+
+2.  Using the following commands, change mntlhlth from a factor level variable to a numeric variable
+
+> **My.Subset\$mntlhlthInt <- as.numeric(levels(My.Subset$mntlhlth))[My.Subset\$mntlhlth]**
+
+
+3.  Create 2 different subsets from this newly created dateframe that includes only those persons who meet the following criteria:
+
++ First subset (Divorced.Cases)  
+> Marital = Divorced  
+> Life = Routine
+
++ Second subset (Married.Cases)  
+> Marital = Married  
+> Life = Exciting
+
+> How many cases meet the criteria for being divorced and reporting their life as "Routine" __________________?
+
+> How many cases meet the criteria for being married and reporting their life as "Exciting" _______________?
+
+\newpage
+
+4.  How many persons endorsed depression from:
+
+> the divorced group __________________________?  
+
+> the married group ___________________________?  
+
+5.  From each subset created above, create a barplot looking at the depression variable to compare the frequency of depression between the two groups.
+
+6.  Use the following set of commands to look at percentages instead of raw frequency counts:
+
+> **d <- prop.table(table(Divorced.Cases\$depress))**  
+> **m <- prop.table(table(Married.Cases\$depress))**
+
+> **barplot(d)**  
+> **barplot(m)**  
+
+
+> In this case, we have told R:
+
++ Create a **table** of frequency counts
++ Using the **prop.table** function, convert those frequency counts to proportions and store them in *d* and *m*
++ Plot those proportions
