@@ -1,0 +1,173 @@
+---
+title: "Session 3 - R Data Structures"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+### Objectives:
+
+1. Learn different R Data Structures
+2. Learn how to create different data structures
+3. Learn how to view and extract values from a data structure
+
+### Getting Started
+
+R has a number of different data structures, and you should be familiar with them all.
+
+1. Scalar
+2. Vector
+3. Matrix
+4. Data Frame
+5. List
+
+Scalars are single values, stored in an object.  Whenever we want to store something in something else, we use the:
+
+>**<-**  
+
+operator.  So, to create a scalar, we tell R the name of the scalar, and then use the **<-** as the assignment operator.  It acts like an "=" sign.
+
+```{r}
+My.Scalar <- 7
+My.Scalar
+```
+
+Technically speaking, a scalar is a 1 dimensional vector with only 1 element contained within.
+
+We will consider a "Vector" to have > 1 element.  We can create a vector with any number of values.  We use the **c()** to "combine" or "concantenate" the values contained with the *()* into a vector. A single vector comprised of > 1 elements is really a 1 dimensional array
+
+```{r}
+My.Vector <- c(1,2,3,4,5)
+My.Vector
+```
+
+A matrix is a 2 dimensional array of values.  We can combine our 2 Vectors by column (**cbind**) to create a 2 dimension array (5 rows x 2 columns).  We will also use the command **colnames()** to give our vectors new names which might be more meaningful.
+
+```{r}
+My.Vector1 <- c(2,4,6,8,10)
+My.Vector2 <- c(3,6,9,12,15)
+My.Matrix <- cbind(My.Vector1, My.Vector2)
+colnames(My.Matrix) <- c("Score.1", "Score.2") # give our column vectors names
+My.Matrix
+```
+
+We can also combine our vectors be by rows using **rbind()**.  We will use the command **rownames()** to give our rows meaningful names.
+
+We can also use **colnames()** as we did above, so now our matrix has both row and column names.
+
+```{r}
+My.Vector1 <- c(2,4,6,8,10)
+My.Vector2 <- c(3,6,9,12,15)
+My.Matrix <- rbind(My.Vector1, My.Vector2)
+rownames(My.Matrix) <- c("Jackie", "Kelsey") # give our row vectors names
+colnames(My.Matrix) <- c("score.1", "score.2", "score.3", "score.4", "score.5") # give our column vectors names
+My.Matrix
+class(My.Matrix) # see that the class is "Matrix""
+```
+
+You can reference individual elements within a Vector or Matrix, so long as you know the position of the value that you want.  For example, if you want the 5th row, 1st column ("10")
+
+```{r}
+My.Vector1 <- c(2,4,6,8,10)
+My.Vector2 <- c(3,6,9,12,15)
+My.Matrix <- cbind(My.Vector1, My.Vector2)
+My.Matrix
+My.Matrix[5,1] # grab the element from the 5th row, 1st column
+```
+
+
+When you see the *[ , ]* notation, everything to the left of the *","* references rows, and everything to the right of the *","* references columns.  Therefore [5,1] is the 5th row, 1st column.  That value, as you can see, is *"10"*
+
+Data frames are like matrices, however data frames can contain vectors with different data types contained within it.  For example, you can have vectors with numbers and other vectors with character (e.g. text) data.  This is what we are most familiar with when using data in other packages, like SPSS or SAS.  In order to create a data frame, we need to use:
+
+>**data.frame()**
+
+and enter the objects that will make up the data frame.
+
+```{r}
+My.Vector1 <- c(2,4,6,8,10)
+My.Vector2 <- c("M","M","M","F","F")
+My.Data.Frame <- data.frame(My.Vector1, My.Vector2)
+colnames(My.Data.Frame) <- c("score", "sex") # give our columns meaningful names
+My.Data.Frame
+class(My.Data.Frame) # see that the class is "data.frame"
+```
+
+Extracting values from a data frame is a different than what we saw earlier with a matrix.  To get values from a data frame, we can use either:
+
+  + **My.Data.Frame[[r,c]]**
+
+or
+
+  + **My.Data.Frame[[r,"column name"]]**
+
+where *"r"* and *"c"* refer to row and column position respectively.
+  
+```{r}
+My.Data.Frame
+My.Data.Frame[[2,1]]  # extract the value from the 2nd row, 1st column
+My.Data.Frame[[4,"sex"]] # extract the value from the 4th row, 2nd column
+```
+
+Note the use of the *[ , ]* when dealing with matrices, but the use of *[[ , ]]* when working with a dataframe.
+
+### Functions used in this session:
+
+c()  
+cbind  
+rbind()  
+data.frame()    
+[ , ]
+&nbsp;  
+[[ , ]]  
+rownames()  
+colnames()  
+
+
+&nbsp;  
+ 
+
+****  
+\newpage
+
+### Practice:
+
+For these questions, in order to save some effort typing, use the **attach()** command after creating the data frame in *4.* below.  By *attaching* the data set, the variables contained within the data set become available without having to constantly reference the data set itself.
+
+For example, before you *attach* the data frame, you would have to type this:
+
+> table(My.Data$Syntax.Use)
+
+But after you *attach* the data frame, you can type this:
+
+> table(Syntax.Use)
+
+1.  Create a vector that contains the following values 2, 1, 5, 2, 4, 4
+
+2.  Create a vector that contains the following values 7, 8, 6, 6, 6, 8
+
+3.  Create a vector that contains the following values 1, 7, 3, 7, 1, 2
+
+4.  Combine these vectors into a new data frame.
+
+5.  Name the columns "Syntax.Use", "Familiarity.With.SPSS", "Familiarity.with.Mathematical.Software"
+
+6.  Name the rows "Student.1", "Student.2"..., "Student 6"
+
+7.  Using the function **table()**, get a frequency table for each variable.
+
+> What was the most frequently occuring response for familiarity with...
+
+> SPSS _______________________?
+
+> Syntax _____________________?
+
+> Mathematical Sofware _______?
+
+8.  Using the function **barplot(Syntax.Use, names.arg = rownames(My.Data))**, create a plot for syntax use, showing the corresponding value for each student.  Your graph should look like this:
+
+![plot](C:/Users/Jeff/Documents/NU/RStudentLab/SyntaxPlot.png)
+
+&nbsp;  
+
