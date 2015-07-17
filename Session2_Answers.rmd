@@ -1,0 +1,61 @@
+---
+title: "Session 2 - Essential Commands for Exploring the Structure of a datafile or R Object"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+### Session 2 : Answers
+
+```{r}
+setwd("~/NU/RStudentLab")
+load("gss.Rda")
+MyData$weightInt <- as.numeric(levels(MyData$weight))[MyData$weight]
+MyData$heightInt <- as.numeric(levels(MyData$height))[MyData$height]
+```
+
+1.  What class of object is "hivkiss" _________________________?
+
+> The variable *hivkiss* has the class **`r class(MyData$hivkiss)`**
+
+2.  What class of object is "id_" _____________________________?
+
+> The variable *id_* has the class **`r class(MyData$id_)`**
+
+\newpage
+
+3.  Look at the summary data for weight.
+
+```{r}
+summary(MyData$weightInt)
+WeightDesc <- summary(MyData$weightInt)
+```
+
+> What is the Median weight _____________________?
+
+> The Median weight is **`r WeightDesc[3]`**
+
+> What is the Average weight ____________________?
+
+> The Average weight is **`r WeightDesc[4]`**
+
+4.  Look at the summary data for Happy Marriage.
+
+```{r}
+summary(MyData$hapmar)
+HapMarTable <- summary(MyData$hapmar)
+```
+
+> How many people are reporting "Not too happy" _________________________?
+
+> **`r HapMarTable[4]`** respondents are reporting "Not too happy"
+
+\newpage
+
+5.  Create a simple plot for the Happy Marriage variable.
+
+```{r, fig.width=6, fig.height=3}
+MyData$hapmar <- droplevels(MyData$hapmar)
+plot(MyData$hapmar)
+```

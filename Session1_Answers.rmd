@@ -1,0 +1,57 @@
+---
+title: "Session 1 - Installing, loading, understanding and using R packages : Answers"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+
+### Session 1 : Answers
+
+1.  Install the r package "DescTools"
+
+> **install.packages("DescTools", dependencies=TRUE, repos="http://cran.us.r-project.org")**
+
+2.  Load the package "DescTools" and run help to see the contents of the package
+
+```{r}
+library(DescTools)
+```
+
+3.  This package contains a data set call "d.pizza".  Load this data set and run help for the data set to see the contents.
+
+```{r}
+data(d.pizza)
+```
+
++ How many variables are contained within the data set? ______________________________
+
+> here are **`r ncol(d.pizza)`** variables contained within the data set.
+
+\newpage
+
+4.  Look at the first few cases of the data set using the "head" command
+
+```{r}
+head(d.pizza)
+```
+
+\newpage
+
+5.  Using the "Freq" function found in "DescTools", run a frequency count for "operator"
+
++ How many pizza's were delivered by Maria _______________?
+
+```{r}
+Freq(d.pizza$operator)
+Deliveries  <- Freq(d.pizza$operator)
+```
+
+> Maria delivered **`r Deliveries[2,2]`** pizzas.
+
+6.  Create a basic plot for "operator"
+
+```{r, fig.width=6, fig.height=3}
+plot(d.pizza$operator)
+```

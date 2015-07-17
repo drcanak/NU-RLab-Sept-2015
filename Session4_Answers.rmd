@@ -1,0 +1,110 @@
+---
+title: "Subetting a data file : Answers"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+output: pdf_document
+classoption: landscape
+---
+
+```{r, echo=FALSE}
+setwd("~/NU/RStudentLab")
+load("gss.Rda")
+```
+
+### Answers
+
+1.  Create a subset of the GSS data that contains the following variables: Marital Status, Life, Poor Mental Health Days, and Depression.  Name it "My.Subset"
+
+```{r}
+myvars <- c("marital", "life", "mntlhlth", "depress") #using variable names
+My.Subset <- MyData[myvars]
+head(My.Subset)
+```
+
+2.  Using the following commands, change mntlhlth from a factor level variable to a numeric variable
+
+> **My.Subset\$mntlhlthInt <- as.numeric(levels(My.Subset$mntlhlth))[My.Subset\$mntlhlth]**
+
+```{r}
+My.Subset$mntlhlthInt <- as.numeric(levels(My.Subset$mntlhlth))[My.Subset$mntlhlth]
+```
+
+\newpage
+
+3.  Create 2 different subsets from this newly created dateframe that includes only those persons who meet the following criteria:
+
++ First subset (Divorced.Cases)  
+> Marital = Divorced  
+> Life = Routine
+
++ Second subset (Married.Cases)  
+> Marital = Married  
+> Life = Exciting
+
+```{r}
+Divorced.Cases <- My.Subset[which(My.Subset$marital == 'Divorced' & My.Subset$life == 'Routine'),]
+dim(Divorced.Cases)
+table(Divorced.Cases$life)
+DivLife <- table(Divorced.Cases$life)
+
+Married.Cases <- My.Subset[which(My.Subset$marital == 'Married' & My.Subset$life == 'Exciting'),]
+dim(Married.Cases)
+table(Married.Cases$life)
+MarLife <- table(Married.Cases$life)
+```
+
+> How many cases meet the criteria for being divorced and reporting their life as "Routine" __________________?
+
+> **`r DivLife[5]`** divorced persons report their life as "Routine"
+
+> How many cases meet the criteria for being married and reporting their life as "Exciting" _______________?
+
+> **`r MarLife[3]`** married persons report their life as "Exciting"
+
+```{r}
+table(Divorced.Cases$depress)
+DivDepress <- table(Divorced.Cases$depress)
+
+table(Married.Cases$depress)
+MarDepress <- table(Married.Cases$depress)
+```
+
+4.  How many persons endorsed depression from:
+
+> the divorced group __________________________?  
+
+> **`r DivDepress[4]`** divorced persons reported being told they are depressed
+
+> the married group ___________________________?  
+
+> **`r MarDepress[4]`** married persons reported being told they are depressed
+
+\newpage
+5.  From each subset created above, create a barplot looking at the depression variable to compare the frequency of depression between the two groups.
+
+```{r, fig.width=4, fig.height=2.5}
+Divorced.Cases$depress <- droplevels(Divorced.Cases$depress) # drop unused levels
+plot(Divorced.Cases$depress)
+
+Married.Cases$depress <- droplevels(Married.Cases$depress) # drop unused levels
+plot(Married.Cases$depress)
+```
+
+\newpage
+
+6.  Use the following set of commands to look at percentages instead of raw frequency counts:
+
+> **d <- prop.table(table(Divorced.Cases\$depress))**  
+> **m <- prop.table(table(Married.Cases\$depress))**
+
+> **barplot(d)**  
+> **barplot(m)**  
+
+```{r, fig.width=6, fig.height=3}
+d <- prop.table(table(Divorced.Cases$depress)) 
+m <- prop.table(table(Married.Cases$depress))
+
+barplot(d) 
+barplot(m)
+
+```
