@@ -1,0 +1,298 @@
+---
+title: "Session 5 - Data Management and Basic Plotting"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+classoption: landscape
+output: pdf_document
+---
+\pagenumbering{gobble}
+
+### Objectives:
+
+1. Review how to read in a comma delimted data set
+2. Review the structure of a data set and the variables contained within
+3. Learn to convert character variables to factor level variables
+4. Learn to change the levels of a factor
+5. Learn to create a new variable based on conditions of another variable (or variables)
+6. Learn basic plotting annotations
+
+### Getting Started
+
+```{r}
+setwd("~/NU/RStudentLab") # set the working directory
+MyData <- read.table("Session5.csv", header = TRUE, sep = ",") # read the data file
+```
+
+You can check the **str()* of the data set, to see the variables contained in the data set and the types of variables.
+
+> **str(MyData)**
+
+```{r}
+str(MyData)
+head(MyData)
+```
+
+By default, when R sees "character" data in a column, it defaults to creating a factor level variable.  Sometimes, this is what you want, other times, this is not what you want.  To maintain the character values as "characters", you need to use **read.csv()** and append the **read.csv()** command with **stingsAsFactors = FALSE**
+
+Usually, allowing R to automatically convert character variables to factor variables is what you want, but not always.
+
+> **MyData2 <- read.csv("Session5.csv", header = TRUE, sep = ",", 
+stringsAsFactors = FALSE ) **
+
+```{r}
+MyData2 <- read.csv("Session5.csv", header = TRUE, stringsAsFactors = FALSE )
+```
+
+Compare the structure of *MyData* with *MyData2* and you will see that, in the first case *Sex* is read as a factor variable and in the second case, *Sex* is read in as a character variable.
+
+```{r}
+str(MyData)
+str(MyData2)
+```
+
+\newpage
+
+When R converts character string values to factors, it creates underlying levels.  These levels are ordered in alphabetical order, unless you specify otherwise.  In this case, *F* precedes *M* in the alphabet, and so *F* is the first level.  This is important to keep in mind, because many analysis will compare higher levels to the lowest level.  In this case, *F* is the lowest level, and is refered to as the *reference category*
+
+But you may prefer another group to be the reference category.  Or you may prefer to redefine the level order some other way.  To do this, you need to use a combination of the **factor** function with **levels**. 
+
+
+```{r}
+# recode male and female to "1" and "2" respectively so that "male" is the reference
+# category.  This preserves "Sex"" as a factor level variable.
+str(MyData$Sex)
+MyData$Sex <- factor(MyData$Sex, levels = c("M", "F"))
+str(MyData$Sex)
+```
+
+You can see that we have changed the levels, so that *M* is the first level (now coded a *1*) and *F* is the second level (now coded a *2*).
+
+Sometimes, you may need to convert a factor level variable into numbers.  This would be true if you were planning on exporting the data set to read and use in another package.  Most stat packages, as well as spreadsheet programs, tend to prefer numbers instead of characters when doing analysis.
+
+To do this involves a few steps, and requires that you understand how to look at the structure of a variable and how R handles factor level variables.
+
+1.  You first need to create a new, numeric variable, based on the existing values of *Sex*.  Remember that we have recoded the levels of  *Sex* so that *M = 1* and *F = 2*.
+
+2.  Now that we have a numeric reprsentation of *Sex*, we can recode it to *0* and *1* using a combination of subsetting and our assignment operator *<-*.
+
+\newpage
+
+```{r}
+# create a new numeric sex variable with  male and female to "0" and "1" respectively
+# "Male" is the reference category when treating this as a numeric variable.
+# Other software packages might prefer a "0" and "1" numeric coding.
+
+head(MyData)
+
+MyData$SexCode <- as.numeric(MyData$Sex) # first create a numeric variable called "SexCode"
+head(MyData)
+
+MyData$SexCode[MyData$SexCode== 1] <- 0 # recode M to 0
+MyData$SexCode[MyData$SexCode== 2] <- 1 # recode F to 1
+head(MyData)
+```
+
+\newpage
+
+In addition to changing around the levels of a factor variable, or converting a factor level variable to a numeric variable, we might also be interested in creating a grouping variable, based on the valus of one or more other variables.
+
+As before, we'll use our subsetting function and assignment operator *<-* for this.
+
+```{r}
+# create Dep and Anx factor level variables based on a cutpoint of 50.
+# first establish the cutpoints.
+
+MyData$DepCat[MyData$Dep < 50] <- "Not Depressed"
+MyData$DepCat[MyData$Dep >=50] <- "Depressed"
+
+MyData$AnxCat[MyData$Anx < 50] <- "Not Anxious"
+MyData$AnxCat[MyData$Anx >=50] <- "Anxious"
+head(MyData)
+str(MyData$DepCat)
+str(MyData$AnxCat)
+
+# convert the variables to factors from character variables and make the "Not" category
+# the reference category for both variables.
+
+MyData$DepCat <- as.factor(MyData$DepCat)
+MyData$AnxCat <- as.factor(MyData$AnxCat)
+str(MyData$DepCat)
+str(MyData$AnxCat)
+
+
+MyData$DepCat <- factor(MyData$DepCat, levels = c("Not Depressed", "Depressed"))
+MyData$AnxCat <- factor(MyData$AnxCat, levels = c("Not Anxious", "Anxious"))
+str(MyData$DepCat)
+str(MyData$AnxCat)
+
+```
+
+Now, our *not* category is the reference category for both.  Because *Anxious* and *Depressed* come before *Not Anxious* and *Not Depressed* alphabetically, we want to flip those around so that the *Not* category is the lowest (e.g. reference) category. 
+
+\newpage
+
+To this point, we have been looking at basic plots.  Plots in R are highly customizable, even with the basic plotting functions.  We can add annotations, change the scale on either, or both, axes.  We can add color, grouping variables, etc...
+
+Lets start with a basic scatterplot looking at the association of a respondents anxiety and depressions scores:
+
+```{r}
+plot(MyData$Dep, MyData$Anx)
+```
+
+\newpage
+
+We can now begin to build up the graph, adding options to make the graph more readable.  We can use the following options in our plot command:
+
+* xlab - add a x-axis label
+* ylab - add a y-axis label
+* pch()[] - change the plotting character, and assign a different point type for each group
+* main - add a chart title
+* xlim - set the x-axis limits
+* ylim - set the y-axis limits
+* col - set the color of the points
+* col()[] - set the color of the points based on a factor
+* legend - add a legend
+
+```{r}
+plot(MyData$Dep, MyData$Anx, 
+     xlab = "Depression Score", 
+     ylab = "Anxiety Score",
+     pch = c(15,19)[MyData$Sex],
+     main = "Association of Depression and Anxiety",
+     xlim = c(10,80),
+     ylim = c(10,80),
+     col = c("blue", "red")[MyData$Sex])
+
+legend(x="topleft", legend = levels(MyData$Sex), col = c("blue", "red"), pch=c(15,19))
+```
+
+\newpage
+
+If we run a regression first, we can also add a fit line using the **abline()** function.  Using **lm()**, we can fit a linear model, predicting *Anxiety Score* from *Depression Score*.  We will save those results to an object called *MyModel* using the **<-** assignment operator and print the model out using the **summary()** function.  This will give us the model parameters.
+
+We can also add a subsitle by inserting a line break in the main title, using the *\\n* function.  In this case, insert the R^2 value from our model.
+
+```{r}
+MyModel <- lm (MyData$Anx ~ MyData$Dep)
+summary(MyModel)
+plot(MyData$Dep, MyData$Anx, 
+     xlab = "Depression Score", 
+     ylab = "Anxiety Score",
+     pch = c(15,19)[MyData$Sex],
+     title(main = "Association of Depression and Anxiety \n Rsq = .69"),
+     xlim = c(10,80),
+     ylim = c(10,80),
+     col = c("blue", "red")[MyData$Sex])
+
+legend(x="topleft", legend = levels(MyData$Sex), col = c("blue", "red"), pch=c(15,19))
+abline(MyModel, col="green", lty=2, lwd=2) # add a fit line to our scatter plot, color it green, make it dashed, and widen it
+```
+\newpage
+
+Sometimes, we might wish to place multiple plots on a singe page.  For this, we use the **par()** function with **mfrow()**.  
+
+**par()** sets graphical parameters.  
+
+**mfrow()** will create a grid of columns and rows to place the plots into.  Save the default *par* values before you change them, so you can revert back to them later
+
+> **opar <- par() # save original settings**  
+> **par(opar) # revert back to original settings**
+
+Let's place the last two plots we created above, side by side (e.g. 1 row, 2 columns).  We can use:
+
+> **par(mfrow=c(1,2))**
+
+This is the first part of the code we need, just before inserting the code that creates the graphs:  
+
+> **opar <- par()**  
+> **par(mfrow=c(1,2))**
+
+
+```{r, fig.height=3.5, fig.width=8, echo=FALSE, warning=FALSE, results="hide"}
+# In order to ensure there is enough space on the PDF page, we also use **fig.height** and **fig.width**
+# to specify the size of the area (3.5 inches x 8 inches) that the plots will be placed in.
+opar <- par()
+par(mfrow=c(1,2))
+
+plot(MyData$Dep, MyData$Anx, 
+     xlab = "Depression Score", 
+     ylab = "Anxiety Score",
+     pch = c(15,19)[MyData$Sex],
+     main = "Association of Depression and Anxiety \n ",
+     xlim = c(10,80),
+     ylim = c(10,80),
+     col = c("blue", "red")[MyData$Sex])
+
+legend(x="topleft", legend = levels(MyData$Sex), col = c("blue", "red"), pch=c(15,19))
+
+MyModel <- lm (MyData$Anx ~ MyData$Dep)
+summary(MyModel)
+plot(MyData$Dep, MyData$Anx, 
+     xlab = "Depression Score", 
+     ylab = "Anxiety Score",
+     pch = c(15,19)[MyData$Sex],
+     title(main = "Association of Depression and Anxiety \n Rsq = .69"),
+     xlim = c(10,80),
+     ylim = c(10,80),
+     col = c("blue", "red")[MyData$Sex])
+
+legend(x="topleft", legend = levels(MyData$Sex), col = c("blue", "red"), pch=c(15,19))
+abline(MyModel, col="green", lty=2, lwd=2) # add a fit line to our scatter plot, color it green, make it dashed, and widen it
+par(opar) # reset graphic parameters to default values
+```
+
+
+Useful links:  
+http://shiny.stat.ubc.ca/r-graph-catalog/
+
+&nbsp;  
+
+### Functions used in this session: 
+
+read.table()  
+read.csv()  
+head()  
+str()  
+factor()  
+as.numeric()  
+as.factor()  
+plot()  
+xlab  
+ylab  
+pch()  
+main  
+xlim  
+ylim  
+col()  
+legend()  
+lm()  
+summary()  
+abline()  
+par()  
+mfrow()  
+
+
+****  
+
+\newpage
+
+### Practice:
+
+1.  Read in the tab delimited data file entitled "ExamAnxiety.dat" and store the data in an object called "MyData".
+
+2.  Reorder the factor level variable "GENDER" so that "Male" is the reference category.
+
+3.  The variable "Revise" measures how many minutes a student reported revising their exam prior to turning it on.  The variable "Anxiety" is a measure of how anxious the student was.  Create a basic scatter plot, with a title, x-axis and y-axis labels looking at the association between Revision Time and Anxiety.
+
+4.  Create a subset of the data, plotting the association between Anxiety and Revision Time for women.
+
+5.  Create a subset of the data, plotting the association between Anxiety and Revision Time for men.
+
+6.  Put both plots together, in a single panel so that they can be viewed side-by-side.  However, to ensure both plots are more easily compared to one another, ensure that both plots have the same limits set on the x and y axis.
+
+7.  Now add a fit line to both graphs, plot them just like you did above in question "6", and describe any differences you see.
+
+8.  Which group, Men or Women, has the higher Rsq value?
+
+
+

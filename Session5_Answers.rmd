@@ -1,0 +1,135 @@
+---
+title: "Session 5 - Data Management and Basic Plotting : Answers"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
+date: "Saturday, September 26th, 2015"
+classoption: landscape
+output: pdf_document
+---
+\pagenumbering{gobble}
+
+```{r, echo=FALSE}
+setwd("~/NU/RStudentLab")
+load("gss.Rda")
+```
+
+### Answers
+
+1.  Read in the tab delimited data file entitled "ExamAnxiety.dat" and store the data in an object called "MyData".
+
+```{r}
+MyData <- read.table("ExamAnxiety.dat", sep="\t", header=TRUE)
+```
+
+2,  Reorder the factor level variable "GENDER" so that "Male" is the reference category.
+
+```{r}
+str(MyData$Gender)
+MyData$Gender <- factor(MyData$Gender, levels = c("Male", "Female"))
+str(MyData$Gender)
+```
+
+\newpage
+
+3.  The variable "Revise" measures how many minutes a student reported revising their exam prior to turning it on.  The variable "Anxiety" is a measure of how anxious the student was about their performance on the exam.  Create a basic scatter plot, with a title, x-axis and y-axis labels looking at the association between Revision Time and Anxiety.
+
+```{r}
+plot(MyData$Anxiety, MyData$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     main = "Association of Anxiety and Revision Time")
+```
+
+\newpage
+
+4.  Create a subset of the date, plotting the association between Anxiety and Revision Time for women.  Check to verify that you have correctly subsetted the data.
+
+```{r}
+MyDataWomen <- MyData[which(MyData$Gender == 'Female'),]
+head(MyDataWomen)
+tail(MyDataWomen)
+
+plot(MyDataWomen$Anxiety, MyDataWomen$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     main = "Association of Anxiety and Revision Time - Women")
+```
+
+\newpage
+
+5.  Create a subset of the date, plotting the association between Anxiety and Revision Time for men.
+
+```{r}
+MyDataMen <- MyData[which(MyData$Gender == 'Male'),]
+head(MyDataMen)
+tail(MyDataMen)
+
+plot(MyDataMen$Anxiety, MyDataMen$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     main = "Association of Anxiety and Revision Time - Men")
+```
+
+\newpage
+
+6.  Put both plots together, in a single panel so that they can be viewed side-by-side.  However, to ensure both plots are more easily compared to one another, ensure that both plots have the same limits set on the x and y axis.
+
+```{r, fig.height=3.5, fig.width=8, echo=FALSE, warning=FALSE, results="hide"}
+par(mfrow=c(1,2))
+
+
+plot(MyDataWomen$Anxiety, MyDataWomen$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     title(main = "Association of Anxiety and Revision Time - Women", cex.main=0.75),
+     xlim = c(0,100),
+     ylim = c(0,100))
+
+plot(MyDataMen$Anxiety, MyDataMen$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     title(main = "Association of Anxiety and Revision Time - Men", cex.main=0.75),
+     xlim = c(0,100),
+     ylim = c(0,100))
+
+```
+
+\newpage
+
+7.  Now add a fit line to both graphs, plot them just like you did above in question "6", and describe any differences you see.
+
+```{r, fig.height=3.5, fig.width=8, echo=FALSE, warning=FALSE, results="hide"}
+par(mfrow=c(1,2))
+
+WomenFit <- lm(MyDataWomen$Anxiety ~ MyDataWomen$Revise)
+plot(MyDataWomen$Anxiety, MyDataWomen$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     title(main = "Association of Anxiety and Revision Time - Women", cex.main=0.75),
+     xlim = c(0,100),
+     ylim = c(0,100))
+abline(WomenFit)
+
+
+MenFit <- lm(MyDataMen$Anxiety ~ MyDataMen$Revise)
+plot(MyDataMen$Anxiety, MyDataMen$Revise,
+     xlab = "Anxiety", 
+     ylab = "Revision Time",
+     title(main = "Association of Anxiety and Revision Time - Men", cex.main=0.75),
+     xlim = c(0,100),
+     ylim = c(0,100))
+
+abline(MenFit)
+```
+
+\newpage
+
+8.  Which group, Men or Women, has the higher Rsq value?
+
+```{r}
+summary(WomenFit)
+summary(MenFit)
+```
+
+
+
+

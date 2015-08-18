@@ -1,10 +1,11 @@
 ---
 title: "Subetting a data file : Answers"
-author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
 date: "Saturday, September 26th, 2015"
 output: pdf_document
 classoption: landscape
 ---
+\pagenumbering{gobble}
 
 ```{r, echo=FALSE}
 setwd("~/NU/RStudentLab")

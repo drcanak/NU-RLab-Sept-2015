@@ -1,10 +1,11 @@
 ---
 title: "Session 3 - R Data Structures"
-author: "Jeff Canar, Jackie Fox, Kelsey Howard, Kritika Nayar, Maureen Satyshur"
+author: "Jeff Canar, Jackie Fox, Kelsey Howard, Maureen Satyshur"
 date: "Saturday, September 26th, 2015"
 output: pdf_document
 classoption: landscape
 ---
+\pagenumbering{gobble}
 
 ### Objectives:
 
@@ -52,7 +53,7 @@ colnames(My.Matrix) <- c("Score.1", "Score.2") # give our column vectors names
 My.Matrix
 ```
 
-We can also combine our vectors be by rows using **rbind()**.  We will use the command **rownames()** to give our rows meaningful names.
+We can also combine our vectors by rows using **rbind()**.  We will use the command **rownames()** to give our rows meaningful names.
 
 We can also use **colnames()** as we did above, so now our matrix has both row and column names.
 
@@ -96,21 +97,19 @@ class(My.Data.Frame) # see that the class is "data.frame"
 
 Extracting values from a data frame is a different than what we saw earlier with a matrix.  To get values from a data frame, we can use either:
 
-  + **My.Data.Frame[[r,c]]**
+  + **My.Data.Frame[r,c]**
 
 or
 
-  + **My.Data.Frame[[r,"column name"]]**
+  + **My.Data.Frame[r,"column name"]**
 
 where *"r"* and *"c"* refer to row and column position respectively.
   
 ```{r}
 My.Data.Frame
-My.Data.Frame[[2,1]]  # extract the value from the 2nd row, 1st column
-My.Data.Frame[[4,"sex"]] # extract the value from the 4th row, 2nd column
+My.Data.Frame[2,1]  # extract the value from the 2nd row, 1st column
+My.Data.Frame[4,"sex"] # extract the value from the 4th row, 2nd column
 ```
-
-Note the use of the *[ , ]* when dealing with matrices, but the use of *[[ , ]]* when working with a dataframe.
 
 ### Functions used in this session:
 
@@ -120,7 +119,6 @@ rbind()
 data.frame()    
 [ , ]
 &nbsp;  
-[[ , ]]  
 rownames()  
 colnames()  
 
