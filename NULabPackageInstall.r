@@ -17,5 +17,5 @@ if (TestOS == TRUE) {
 }
 
 p_install(NULabPackages, character.only = TRUE, 
-          dependencies = FALSE, repos="http://watson.nci.nih.gov/cran_mirror/",
+          dependencies = FALSE,
           type = os)
